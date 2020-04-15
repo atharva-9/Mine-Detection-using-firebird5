@@ -6,7 +6,7 @@
  */ 
 //PJ2 PJ3 PJ5 Radar sensor 
 //PJ1 PJ2 gps
-//XBEE 
+
 
 
 #define F_CPU 14745600
@@ -225,19 +225,21 @@ int main(void)
 	
 	if ((PINJ2 == 1 && PINJ2 ==1 && PINJ5 == 1)||(PINJ2 == 0 && PINJ2 == 1 && PINJ5 == 1) ||(PINJ2 == 1 && PINJ2 ==0 && PINJ5 == 1) ||(PINJ2 == 1 && PINJ2 ==1 && PINJ5 == 0 ) )
 	{
-		lcd_string("NO threat");
-		motions();
+		lcd_string("Threat  detected");
+		stop();
 		_delay_ms(100);
 		lcd_wr_command(0x01);
+		//gpstx();
+		
 		
 		
 	}
 	else
 	{
-		lcd_string("Threat  detected");
+		lcd_string("NO threat");
+		motions();
 		_delay_ms(100);
 		lcd_wr_command(0x01);
-		//gpstx();
 	}
 	}
 	}
