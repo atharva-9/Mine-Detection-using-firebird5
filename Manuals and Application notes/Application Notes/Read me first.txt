@@ -1,0 +1,2 @@
+Most of the application notes are located in the "Accessories" folder.
+It is located in the following path: CD\Fire Bird V ATMEGA2560 Robots 2010-12-29\Accessories
