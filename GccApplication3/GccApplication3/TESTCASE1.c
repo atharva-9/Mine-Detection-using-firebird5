@@ -5,7 +5,8 @@
  * Author : Dark Warrior
  */ 
 //PJ2 PJ3 PJ5 Radar sensor 
-//PJ1 PJ2 gps
+//PJ1 PJ2 gps TX RX port 
+//Zigbee is premounted on TX0 RX0
 
 
 
