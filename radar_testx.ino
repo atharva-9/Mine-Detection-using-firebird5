@@ -5,7 +5,7 @@ LiquidCrystal lcd(PC0, PC2, PC4, PC5, PC6, PC7); // initialize the library with 
 #define LEFTMOTOR_PIN2    PA1
 #define RIGHTMOTOR_PIN1   PA2
 #define RIGHTMOTOR_PIN2   PA3
-  int r1,r2, r3;
+int r1, r2, r3;
 
 // incoming serial byte
 int inByte = 0;
@@ -72,11 +72,11 @@ void gpstx()
   {
     do
     {
-      while ( !Serial3.available() );
-    } while ( 'G' != Serial3.read() );
-    while (!Serial3.available());
+      while ( !Serial2.available() );
+    } while ( 'G' != Serial2.read() );
+    while (!Serial2.available());
 
-  } while ( 'G' != Serial3.read() );
+  } while ( 'G' != Serial2.read() );
 
   //==================== searching for "GG" ===================//
 
@@ -85,12 +85,12 @@ void gpstx()
 
   do
   {
-    while ( !Serial3.available() );
-  } while ( ',' != Serial3.read() );
+    while ( !Serial2.available() );
+  } while ( ',' != Serial2.read() );
   do
   {
-    while ( !Serial3.available() );
-  } while ( ',' != Serial3.read() );
+    while ( !Serial2.available() );
+  } while ( ',' != Serial2.read() );
 
   //============== seeking for north cordinate ==============//
 
@@ -101,8 +101,8 @@ void gpstx()
   i = 0;
   do
   {
-    while ( !Serial3.available() );
-    inByte = Serial3.read();
+    while ( !Serial2.available() );
+    inByte = Serial2.read();
     north [ i ] = inByte;
     //        Serial.write ( inByte );
     i ++;
@@ -112,20 +112,21 @@ void gpstx()
   //============== seeking for east cordinate ==============//
   do
   {
-    while ( !Serial3.available() );
-  } while ( ',' != Serial3.read() );
+    while ( !Serial2.available() );
+  } while ( ',' != Serial2.read() );
   //============== seeking for east cordinate ==============//
   //============== printing the east cordinate ===============//
   //    Serial.print(" E: ");
   i = 0;
   do
   {
-    while ( !Serial3.available() );
-    inByte = Serial3.read();
+    while ( !Serial2.available() );
+    inByte = Serial2.read();
     east [ i ] = inByte;
     i ++;
-    //        Serial.write ( inByte );
-  } while ( ',' != inByte );
+    Serial.write ( inByte );
+  }
+  while ( ',' != inByte );
   //============== printing the east cordinate ===============//
   delay(500);
   digitalWrite(buzzer, HIGH);
@@ -134,10 +135,10 @@ void gpstx()
   Serial.write(" GEOGRAPHICAL CORDINATES");
   Serial.print( " N: " );
   for ( i = 0; north [ i ] != ' '; i ++ )
-    Serial1.write ( north [ i ] );
+    Serial.write ( north [ i ] );
   Serial.print( " E: " );
   for ( i = 0; east [ i ] != ' '; i ++ )
-    Serial1.write ( east [ i ] );
+    Serial.write ( east [ i ] );
   Serial.println();
   delay ( 500 );
   digitalWrite(buzzer, LOW);
@@ -145,52 +146,61 @@ void gpstx()
 }
 void motions(void)
 {
-  while (1)
-  {
-    forward(); //both wheels forward
-    _delay_ms(40000);
+  //  while (1)
+  //  {
+  forward(); //both wheels forward
+  _delay_ms(40000);
 
-    stop();
-    _delay_ms(5000);
-    left(); //Left wheel backward, Right wheel forward
-    _delay_ms(12000);
+  stop();
+  _delay_ms(5000);
+  left(); //Left wheel backward, Right wheel forward
+  _delay_ms(12000);
 
-    stop();
-    _delay_ms(5000);
-    forward(); //both wheels forward
-    _delay_ms(5000);
+  stop();
+  _delay_ms(5000);
+  forward(); //both wheels forward
+  _delay_ms(5000);
 
-    stop();
-    _delay_ms(5000);
-    left(); //Left wheel backward, Right wheel forward
-    _delay_ms(12000);
+  stop();
+  _delay_ms(5000);
+  left(); //Left wheel backward, Right wheel forward
+  _delay_ms(12000);
 
-    stop();
-    _delay_ms(5000);
-    forward(); //both wheels forward
-    _delay_ms(40000);
+  stop();
+  _delay_ms(5000);
+  forward(); //both wheels forward
+  _delay_ms(40000);
 
-    stop();
-    _delay_ms(5000);
-    stop();
-    right(); //Left wheel backward, Right wheel forward
-    _delay_ms(9000);
-    forward(); //both wheels forward
-    _delay_ms(5000);
+  stop();
+  _delay_ms(5000);
+  stop();
+  right(); //Left wheel backward, Right wheel forward
+  _delay_ms(9000);
+  forward(); //both wheels forward
+  _delay_ms(5000);
 
-    stop();
-    _delay_ms(5000);
+  stop();
+  _delay_ms(5000);
 
-    stop();
-    _delay_ms(5000);
-    right(); //Left wheel backward, Right wheel forward
-    _delay_ms(12000);
-    if ((r1 > 0 && r2 > 0) || (r1 > 0 && r3 > 0) || (r2 > 0 && r3 > 0))
-    {
-      lcd.print("Threat detected");
-      gpstx();// send GPS data to PC over Xbee
-    }
+  stop();
+  _delay_ms(5000);
+  right(); //Left wheel backward, Right wheel forward
+  _delay_ms(12000);
+
+//  if ((r1 > 0 && r2 > 0) || (r1 > 0 && r3 > 0) || (r2 > 0 && r3 > 0))
+    //    {
+    //      lcd.print("Threat detected");
+    //      gpstx();// send GPS data to PC over Xbee
+    //    }
+    //
+    //  }
+  
   }
+void DETECTION()
+{
+  lcd.print("Threat detected");
+  gpstx();// send GPS data to PC over Xbee
+
 }
 void loop()
 {
@@ -198,18 +208,15 @@ void loop()
   Serial.print(r1 = digitalRead(PJ2));
   Serial.print(r2 = digitalRead(PJ3));
   Serial.print(r3 = digitalRead(PJ5));
-  //  while (1)
-  //  {
-  //    if ((r1 > 0 && r2 > 0) || (r1 > 0 && r3 > 0) || (r2 > 0 && r3 > 0))
-  //    {
-  //      lcd.print("Threat detected");
-  //      gpstx();// send GPS data to PC over Xbee
-  //    }
-  //    else
-  //    {
-  //      lcd.print("NO THREAT DETECTED");
-  //
-  motions();
 
+  if ((r1 > 0 && r2 > 0) || (r1 > 0 && r3 > 0) || (r2 > 0 && r3 > 0))// IF 2 SENORS DETECT AN OBJECT RAISE ALARM
+  {
+    DETECTION();
+  }
+  else
+  {
+    lcd.print("NO THREAT DETECTED");
+    motions();
+  }
 
 }
